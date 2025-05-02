@@ -1,0 +1,6 @@
+CREATE TABLE user_system (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(80) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(80) NOT NULL
+);
