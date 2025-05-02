@@ -3,7 +3,9 @@ package br.com.beehome.backTaskManager.exception.handler;
 import br.com.beehome.backTaskManager.exception.CustomizeException;
 import br.com.beehome.backTaskManager.exception.ExceptionResponse;
 import br.com.beehome.backTaskManager.exception.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,11 +16,24 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
 
+@Slf4j
+@Hidden
 @RestControllerAdvice
 public class CustomizedResponseEntityExceptionHandler{
 
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<ExceptionResponse> handleException (Exception ex, WebRequest webRequest){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false)
+        );
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public final ResponseEntity<ExceptionResponse> handleNotFoundExceptions (Exception ex, WebRequest webRequest){
+    public final ResponseEntity<ExceptionResponse> handleNotFoundExceptions (ResourceNotFoundException ex, WebRequest webRequest){
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(),
                 ex.getMessage(),
